@@ -1,0 +1,6 @@
+role s0006493847trial.bizartxs::iotaccess
+{
+    application privilege: s0006493847trial.bizartxs::Basic;
+    catalog schema "NEO_DE8DUH7TL4SRTBCFXLNGICT6C": SELECT;
+    catalog schema "_SYS_BIC": SELECT;
+}

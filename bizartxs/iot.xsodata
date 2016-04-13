@@ -1,0 +1,3 @@
+service {
+         "_SYS_BIC"."s0006493847trial.bizartxs/CV_IOT" as "IoT" key generate local "GEND_ID";
+}

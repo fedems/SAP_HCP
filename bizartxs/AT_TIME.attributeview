@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AT_TIME" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AT_TIME"/>
+  <metadata changedAt="2016-03-17 19:39:46.573"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="DATETIMESTAMP" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Fecha"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="DATETIMESTAMP"/>
+    </attribute>
+    <attribute id="DATE_SQL" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Fecha SQL"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="DATE_SQL"/>
+    </attribute>
+    <attribute id="YEAR" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Anio"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="YEAR"/>
+    </attribute>
+    <attribute id="QUARTER" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Trimestre"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="QUARTER"/>
+    </attribute>
+    <attribute id="MONTH" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Mes"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="MONTH"/>
+    </attribute>
+    <attribute id="WEEK" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Semana"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="WEEK"/>
+    </attribute>
+    <attribute id="DAY" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Dia"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="DAY"/>
+    </attribute>
+    <attribute id="HOUR" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Hora"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="HOUR"/>
+    </attribute>
+    <attribute id="MINUTE" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Minuto"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="MINUTE"/>
+    </attribute>
+    <attribute id="SECOND" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Segundo"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="SECOND"/>
+    </attribute>
+    <attribute id="CALQUARTER" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Trimestre calendario"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="CALQUARTER"/>
+    </attribute>
+    <attribute id="CALMONTH" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Mes calendario"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="CALMONTH"/>
+    </attribute>
+    <attribute id="CALWEEK" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Semana mes"/>
+      <keyMapping schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION" columnName="CALWEEK"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="M_TIME_DIMENSION" modelObjectNameSpace="_SYS_BI" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

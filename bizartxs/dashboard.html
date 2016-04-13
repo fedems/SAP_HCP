@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+		
+		<title>IoT dashboard</title>
+		
+        <!-- SAPUI5 lib inclusion -->
+		<script src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js" 
+				id="sap-ui-bootstrap"
+				data-sap-ui-libs="sap.ui.commons,sap.suite.ui.commons,sap.m,sap.ui.core,sap.makit,sap.ui.vbm" 
+				data-sap-ui-xx-bindingSyntax="complex"
+				data-sap-ui-theme="sap_bluecrystal">
+		</script>
+		
+		<!-- Main page style CSS style -->
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	    <style>
+		    html,body{
+		        height: 100%;
+		        margin: 0px;
+		        padding: 0px
+		      }
+			body,.sapMPage {
+				background: rgba(228, 130, 153, 1);
+				background-image: url('IoT.jpg');
+				background-repeat: no-repeat;
+		        background-position: center;
+		        background-color: transparent;
+		        background-size: 80%;
+			}
+		
+			.sapMTile {
+				background: rgba(255,255,255,0.8);
+			}
+			.sapMTile.sapMTileActive {
+				background: rgba(255,255,255,0.8);
+			}
+			#initial-page-scroll>.sapSuiteGT {
+				margin: 1rem;
+			}
+	    </style>
+		       		
+<!-- ###################################################### -->
+<!-- DATA MODEL functions									-->
+<!-- ###################################################### -->
+	<script type="text/javascript">
+		var getModelFromURL = function(url) {
+			var url = url;
+			var oModel = new sap.ui.model.json.JSONModel();
+			oModel.loadData(url, null, false);
+			return oModel;
+		};
+		
+		function updateDataModel(model){
+			model.refresh();
+		}
+	</script>
+      
+<!-- ###################################################### -->
+<!-- All VIEWS												-->
+<!-- ###################################################### -->
+    <script type="text/javascript">
+	// Main Page
+	var buildMainPage = function(id, title) {
+		var page = new sap.m.Page(id, {
+			title : title,
+			showNavButton : false
+		});
+	
+		return page;
+	};
+	
+	// Chart detail page
+	var buildChartPage = function(id, oModel, chart, title) {
+			var chartPage = new sap.m.Page(id , {
+			showNavButton: true, navButtonPress: function(){app.back();},
+			title : [title],
+			content : [chart]
+		});	
+
+		return chartPage;
+	};
+	
+	// Geo data page
+	var buildGeoPage = function(id, oModel, map, title) {
+	        
+	        var GeoPage = new sap.m.Page(id , {
+	        showNavButton: true, navButtonPress: function(){app.back();},     
+			title : [title],
+			content : [map]
+		});	
+
+		return GeoPage;
+	};
+    </script>
+    
+    <!-- Functions for creating the SENSOR TILES of the app -->
+	<script type="text/javascript">
+    	var buildTile = function(oModel, description, location, sensorId){
+    		var tile = new sap.m.StandardTile(description, {
+    			numberUnit : "Celsius",
+    			infoState : "Success",
+    			icon : sap.ui.core.IconPool.getIconURI("temperature"),
+    			press : function(oEvent) { app.to("detailPageChart_sensor"+sensorId);},
+    			tap   : function(oEvent) { app.to("detailPageChart_sensor"+sensorId);}
+    			
+    		});
+    		tile.setTitle(description + "@\n" + location);
+    		tile.setModel(oModel);
+
+    		// All the bindings
+            tile.bindProperty("info", "/d/results/0/C_TIMESTAMP",function(bValue) {
+                jQuery.sap.require("sap.ui.core.format.DateFormat");
+                var oDateFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern: "HH:mm:ss - dd/MM/yy"});
+                returnVal = oDateFormat.format(new Date(Number(bValue.substr(6,13))))
+                return returnVal;
+            });
+    		tile.bindProperty("number", "/d/results/0/C_TEMPERATURE",function(bValue) {
+    			returnVal = Math.round(bValue * 10) / 10 ;
+    			return returnVal + "\u00b0";
+    		});
+    		return tile;
+    		
+    	};
+	</script>
+	
+	<!-- Function for creating the Geo Map of a sensor -->
+    <script type="text/javascript">
+    	var getMap = function(id, oModel){
+	        // Get sensor data
+	        var data = oModel.getData();
+	        // Get lattitude and longitude
+	        var lat = data.d.results[0].C_LAT;
+	        var long = data.d.results[0].C_LONG;
+	        // Construct position string
+	        var pos= long+';'+lat+';0';
+	        var oMap = new sap.ui.vbm.GeoMap('vbi', {
+                width : "100%",
+                height: "100%",
+                initialPosition : [pos],
+                initialZoom: 14,
+                config: null,
+                vos: [ new sap.ui.vbm.Spots( "spots1", {  
+                                              items: [  
+                                                        new sap.ui.vbm.Spot({  
+                                                        text: '1',                     
+                                                        position: [pos],  
+                                                        tooltip: 'Sensor temperatura',  
+                                                        alignment : "0",  
+                                                        image : 'pin_blue.png'  
+                                                        }),  
+                                                    ]  
+                                            }),  
+                ],  
+	        });
+	        return oMap;
+    	};	
+    </script>
+	
+	<!-- Function for creating the TEMPERATURE CHARTS OF A SENSOR -->
+    <script type="text/javascript">
+    	var getChartForMetric = function(id, model, bindingName, minValue, maxValue){
+    	    var oChart = new sap.makit.Chart(id, {
+    	     height: "90%",
+    	     width : "100%",
+    	     type: sap.makit.ChartType.Line,
+    	     category : new sap.makit.Category({ column : "Fecha", displayName : "Fecha"}),
+    	     categoryAxis : new sap.makit.CategoryAxis({ displayLastLabel: false}),
+    	     valueAxis    : new sap.makit.ValueAxis({  min:minValue, max:maxValue}),
+    	     values       :  [new sap.makit.Value({ expression : "temperature", displayName : "Temperatura"})]
+    	 	});
+    	 	
+    	 	var col = new sap.makit.Column({
+    	 	    name:"Fecha",
+    	 	    value: {
+    	 	        path : 'C_TIMESTAMP',
+    	 	        formatter : function(value){
+    	 	            var strDate = value + 'a';
+    	 	            jQuery.sap.require("sap.ui.core.format.DateFormat");
+                        var oDateFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern: "HH:mm:ss - dd/MM/yy"});
+                        returnVal = oDateFormat.format(new Date(Number(strDate.substr(6,13))))
+                        return returnVal;
+                    }
+    	 	    }
+    	    });
+    	 	
+    	 	 //oChart.addColumn(new sap.makit.Column({name:"Fecha", value:"{C_TIMESTAMP}"}));
+    	     oChart.addColumn(col);
+    	  
+    	     col = new sap.makit.Column({
+    	 	    name:"temperature",
+    	 	    value: {
+    	 	        path : 'C_TEMPERATURE',
+    	 	        formatter : function(value){
+                        var returnVal = Math.round(value * 10) / 10 ;
+    			        return returnVal;
+                    }
+    	 	    }
+    	    });
+    	    
+    	    //oChart.addColumn(new sap.makit.Column({name:"temperature", value:"{C_TEMPERATURE}", type:"number"}));
+    	    oChart.addColumn(col);
+    	     
+    	    oChart.setModel(model);
+    	    oChart.bindRows(bindingName);
+    	    //oChart.getCategoryAxis().setSortOrder(sap.makit.SortOrder.Descending);
+    	 	
+    	 	return oChart;
+    	};	
+    </script>
+	
+	<!-- Function to update the model of an UI object -->
+	<script type="text/javascript">
+		var updateModelOfUiObject = function(id, model){
+			var object = sap.ui.getCore().getElementById(id);
+			object.setModel(model);
+		};	
+	</script>    
+      
+<!-- ###################################################### -->
+<!-- THE MAIN APP											-->
+<!-- ###################################################### -->      
+    <script type="text/javascript">
+      jQuery.sap.require("sap.ui.core.IconPool");
+      jQuery.sap.require("sap.ui.core.Icon");
+      jQuery.sap.declare("sap.ui.customized.FontIconContainer");
+
+	  var idPageMain = "main";
+	  var app = new sap.m.App("myApp", {
+		  initialPage : idPageMain
+	  }); 
+	
+		// Now create the page and place it into the HTML document
+		//var mainPage = buildMainPage(idPageMain, "IoT dashboard");
+		
+		// Main page footer and icons 
+		leftFooterText = new sap.m.Text('totalMessages');
+		footerText = new sap.m.Text('footer_text');
+		footerText.setText('');
+
+	  	var settings = new sap.ui.core.Icon( {  
+		    src : sap.ui.core.IconPool.getIconURI( "settings" ),  
+		    size : "20px",  
+		    color : "white",  
+		    activeColor : "white",  
+		    activeBackgroundColor : "black",  
+		    hoverColor : "#eeeeee",  
+		    hoverBackgroundColor : "#666666",  
+		    width : "70px",  
+		    height: "30px"
+		} );
+		settings.attachPress(function(oEvent) {
+			openSettingsDialog();
+		});
+
+		var ruleSettings = new sap.ui.core.Icon( {  
+		    src : sap.ui.core.IconPool.getIconURI( "activity-2" ),  
+		    size : "20px",  
+		    color : "white",  
+		    activeColor : "white",  
+		    activeBackgroundColor : "black",  
+		    hoverColor : "#eeeeee",  
+		    hoverBackgroundColor : "#666666",  
+		    width : "70px",  
+		    height: "30px"
+		} );
+		ruleSettings.attachPress(function(oEvent) {
+			openRulesSettingsDialog();
+		});
+
+		rulesStatusIcon = new sap.ui.core.Icon( {  
+		    src : sap.ui.core.IconPool.getIconURI( "world" ),  
+		    size : "20px",  
+		    color : "white",  
+		    activeColor : "white",  
+		    activeBackgroundColor : "black",  
+		    hoverColor : "#eeeeee",  
+		    hoverBackgroundColor : "#666666",  
+		    width : "70px",  
+		    height: "30px"
+		} );
+		rulesStatusIcon.setTooltip('Switch to Geo-location');
+		rulesStatusIcon.attachPress(function(oEvent) {
+			app.to("geopage");
+		});
+		
+		// Main page
+		var mainPage = new sap.m.Page({title:"IoT dashboard - sensores",id:"main",enableScrolling: false, footer: new sap.m.Bar({
+			id: 'page-footer',
+			contentLeft: [leftFooterText],
+			contentMiddle: [footerText,rulesStatusIcon],
+			contentRight: [ruleSettings,settings]
+		})
+		}); 
+	
+	  var appLink = window.location.href;
+      
+      // Arduino FIO - Xbee hub - get data and build tiles and charts
+	  var oModelSensorData = getModelFromURL("/s0006493847trial/bizartxs/iotservice.xsodata/IoT_NZ?$top=1&$filter=G_DEVICE%20eq%20%276bf3855d-8cbb-47c4-b2d7-9ac5defdefd1%27&$orderby=C_TIMESTAMP%20desc&$format=json");
+	  var oModelSensorDataG = getModelFromURL("/s0006493847trial/bizartxs/iotservice.xsodata/IoT_NZ?$top=50&$filter=G_DEVICE%20eq%20%276bf3855d-8cbb-47c4-b2d7-9ac5defdefd1%27&$orderby=C_TIMESTAMP%20desc&$format=json");
+	  var chart_sensor1 = getChartForMetric("chart_sensor1", oModelSensorDataG, "/d/results/", "","");
+	  var detailPageChart_sensor = buildChartPage("detailPageChart_sensor1",oModelSensorData,chart_sensor1,"Temperatura / Fecha - Grafica");
+	  var sensorTile = buildTile(oModelSensorData,"FIO01","Parnell, Auckland, NZ","1");
+	  mainPage.addContent(sensorTile);
+	  app.addPage(detailPageChart_sensor);
+
+      // Intel Edison - get data and build tiles and charts	  	  
+	  oModelSensorData = getModelFromURL("/s0006493847trial/bizartxs/iotservice.xsodata/IoT_NZ?$top=1&$filter=G_DEVICE%20eq%20%27689a10f8-7890-4af0-a9ef-65800f9cb1af%27&$orderby=C_TIMESTAMP%20desc&$format=json");
+	  oModelSensorDataG = getModelFromURL("/s0006493847trial/bizartxs/iotservice.xsodata/IoT_NZ?$top=50&$filter=G_DEVICE%20eq%20%27689a10f8-7890-4af0-a9ef-65800f9cb1af%27&$orderby=C_TIMESTAMP%20desc&$format=json");
+	  var chart_sensor2 = getChartForMetric("chart_sensor2", oModelSensorDataG, "/d/results/", "","");
+	  var detailPageChart_sensor = buildChartPage("detailPageChart_sensor2",oModelSensorData,chart_sensor2,"Temperatura / Fecha - Grafica");
+	  var sensorTile = buildTile(oModelSensorData,"EDISON01","Parnell, Auckland, NZ","2");
+	  mainPage.addContent(sensorTile);
+	  app.addPage(detailPageChart_sensor);
+	  
+	  // Build the Geo Map
+	  var map = getMap("geo_map",oModelSensorData);
+	  var GeoPage1 = buildGeoPage("geopage",oModelSensorData,map,"Ubicación de sensores");
+	  app.addPage(GeoPage1);
+	  
+	  app.addPage(mainPage);
+	  app.placeAt("content");
+	  
+	  //Update the values in the tiles and charts every x ms
+	  var updateInMilliseconds = 2000;
+	  setInterval(function() {
+	    var oModelSensorData = getModelFromURL("/s0006493847trial/bizartxs/iotservice.xsodata/IoT_NZ?$top=1&$filter=G_DEVICE%20eq%20%276bf3855d-8cbb-47c4-b2d7-9ac5defdefd1%27&$orderby=C_TIMESTAMP%20desc&$format=json");
+		updateDataModel(oModelSensorData);
+
+        var sensors = oModelSensorData.getData();
+    	updateModelOfUiObject("FIO01",oModelSensorData);
+    	
+    	oModelSensorData = getModelFromURL("/s0006493847trial/bizartxs/iotservice.xsodata/IoT_NZ?$top=1&$filter=G_DEVICE%20eq%20%27689a10f8-7890-4af0-a9ef-65800f9cb1af%27&$orderby=C_TIMESTAMP%20desc&$format=json");
+		updateDataModel(oModelSensorData);
+    	updateModelOfUiObject("EDISON01",oModelSensorData);
+
+	  }, updateInMilliseconds);
+	</script>      
+</head>
+  <body id="content" class="sapUiBody">
+    <div id="content"></div>
+  </body>
+</html>
+
+  

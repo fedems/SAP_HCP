@@ -1,0 +1,5 @@
+role s0006493847trial.bizartxs::iot
+{
+    application privilege: s0006493847trial.bizartxs::Basic;
+    catalog schema "_SYS_BIC": SELECT;
+}

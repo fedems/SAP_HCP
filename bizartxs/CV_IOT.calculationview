@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_IOT" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="CV_IOT"/>
+  <metadata changedAt="2016-03-18 13:12:46.211"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="50"/>
+  <dataSources>
+    <DataSource id="T_IOT_37889E8376B40DABEEA5" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews/>
+  <logicalModel id="T_IOT_37889E8376B40DABEEA5">
+    <descriptions/>
+    <attributes>
+      <attribute id="G_DEVICE" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Dispositivo ID"/>
+        <keyMapping schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5" columnName="G_DEVICE"/>
+      </attribute>
+      <attribute id="G_CREATED" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Creado"/>
+        <keyMapping schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5" columnName="G_CREATED"/>
+      </attribute>
+      <attribute id="C_TIMESTAMP" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Timestamp"/>
+        <keyMapping schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5" columnName="C_TIMESTAMP"/>
+      </attribute>
+      <attribute id="C_SENSORID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Sensor ID"/>
+        <keyMapping schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5" columnName="C_SENSORID"/>
+      </attribute>
+      <attribute id="C_LAT" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Lattitude"/>
+        <keyMapping schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5" columnName="C_LAT"/>
+      </attribute>
+      <attribute id="C_LONG" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Longitude"/>
+        <keyMapping schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5" columnName="C_LONG"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="C_VOLTAGE" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Voltage"/>
+        <measureMapping schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5" columnName="C_VOLTAGE"/>
+      </measure>
+      <measure id="C_TEMPERATURE" order="8" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Temperature"/>
+        <measureMapping schemaName="NEO_DE8DUH7TL4SRTBCFXLNGICT6C" columnObjectName="T_IOT_37889E8376B40DABEEA5" columnName="C_TEMPERATURE"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

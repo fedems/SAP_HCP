@@ -1,0 +1,3 @@
+service {
+    "NEO_DE8DUH7TL4SRTBCFXLNGICT6C"."T_IOT_37889E8376B40DABEEA5" as "IoT_NZ" key generate local "GEND_ID";
+}
